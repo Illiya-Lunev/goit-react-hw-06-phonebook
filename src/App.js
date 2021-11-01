@@ -4,7 +4,9 @@ import FormPhoneBook from './componets/FormPhoneBook/FormPhoneBook.jsx';
 import ContactList from './componets/ContactList/ContactList.jsx';
 import Filter from './componets/Filters/Filters.jsx';
 import s from './componets/FormPhoneBook/formPhone.module.css';
+import store from './redux/store.js';
 
+console.log(store);
 
 export default function App() {
   const [contacts, setContacts] = useState([]);
@@ -20,9 +22,12 @@ export default function App() {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
-
   const formSubmitHandler = (name, number) => {
-    if (contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())) {
+    if (
+      contacts.find(
+        contact => contact.name.toLowerCase() === name.toLowerCase(),
+      )
+    ) {
       alert(`${name} is already in contacts`);
       return;
     }
@@ -34,17 +39,20 @@ export default function App() {
     setContacts(prevState => [newContact, ...prevState]);
   };
 
-
   const deleteContacts = contactId => {
-    setContacts(prevState => prevState.filter(contact => contact.id !== contactId));
+    setContacts(prevState =>
+      prevState.filter(contact => contact.id !== contactId),
+    );
   };
 
   const handleContactsFilter = e => {
     setFilter(e.currentTarget.value);
-};
+  };
 
   const filteredContacts = () => {
-    return contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()));
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase()),
+    );
   };
 
   return (
