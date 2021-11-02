@@ -1,14 +1,19 @@
 import { useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useSelector, useDispatch } from 'react-redux';
+
 import s from './formPhone.module.css';
+import { addContact } from '../../redux/actions';
 
 // Пропсы передаем в функцию как параметры
-export default function FormPhoneBook({ onSubmit }) {
+export default function FormPhoneBook() {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const nameId = uuidv4();
-  const numberId = uuidv4();
+  const dispatch = useDispatch();
+
+  const items = useSelector(state => state.contacts.items);
+
+  const onSubmit = () => dispatch(addContact({ name, number }));
 
   const handleChange = e => {
     const { name, value } = e.currentTarget;
@@ -27,8 +32,12 @@ export default function FormPhoneBook({ onSubmit }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-// Вызываем пропс , передаем параметры
-    onSubmit(name, number);
+    const isContactExist = name => {
+      return items.some(item => item.name.toLowerCase() === name.toLowerCase());
+    };
+    isContactExist(name)
+      ? alert(`${name} is already in contacts.`)
+      : onSubmit(name, number);
     // очистка вместо ресета
     setName('');
     setNumber('');
@@ -36,13 +45,12 @@ export default function FormPhoneBook({ onSubmit }) {
 
   return (
     <form className={s.form} onSubmit={handleSubmit}>
-      <label className={s.label} htmlFor={nameId}>
+      <label className={s.label}>
         Name
         <input
           className={s.input}
           type="text"
           name="name"
-          id={nameId}
           value={name}
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Имя может состоять только из букв, апострофа, тире и
@@ -52,13 +60,12 @@ export default function FormPhoneBook({ onSubmit }) {
           onChange={handleChange}
         />
       </label>
-      <label className={s.label} htmlFor={numberId}>
+      <label className={s.label}>
         Number
         <input
           className={s.input}
           type="tel"
           name="number"
-          id={numberId}
           value={number}
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
