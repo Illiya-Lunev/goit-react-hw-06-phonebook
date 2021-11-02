@@ -9,6 +9,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+// Ссылка на локал Сторедж
 import storage from 'redux-persist/lib/storage';
 import logger from 'redux-logger';
 import contactsReducer from './reducer';
@@ -21,7 +22,7 @@ const middleware = [
   }),
   logger,
 ];
-
+// Конфигурация локал  сторедж
 const contactsPersistConfig = {
   key: 'contacts',
   storage,
